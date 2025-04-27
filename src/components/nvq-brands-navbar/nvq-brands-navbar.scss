@@ -1,0 +1,21 @@
+:host {
+  /** @prop --background-color: The color of the navbar */
+  --background-color: black;
+
+  /** @prop --max-height: The maximum height of the logos. */
+  --max-height: 42px;
+
+  display: block;
+}
+
+div.bar slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background-color);
+  padding: 15px 18px;
+  gap: 24px;
+  ::slotted(a){
+      max-height: var(--max-height);
+  }
+}

@@ -1,4 +1,5 @@
 import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
 
 export const config: Config = {
   namespace: 'nvq-brands-nav-bar',
@@ -23,4 +24,7 @@ export const config: Config = {
   testing: {
     browserHeadless: "shell",
   },
+  plugins: [
+    sass(),
+  ],
 };
