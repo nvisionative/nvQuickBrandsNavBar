@@ -8,7 +8,9 @@ import { Component, Host, h, Element, State } from '@stencil/core';
 export class NvqBrandsNavbar {
   
   @Element() el!: HTMLElement;
-  @State() currentIndex: number = 0;
+
+  @State() scrollPosition = 0
+  @State() largestWidth = 0;
   
   private items: Element[] = [];
   private slot?: Element;
@@ -18,16 +20,13 @@ export class NvqBrandsNavbar {
 
   private updateGridTemplateColumns() {
     if (this.slot != undefined && this.items.length > 0) {
-      const largestWidth = Math.max(
+      this.largestWidth = Math.max(
         ...this.items.map(item => (item as HTMLElement).offsetWidth || 0)
       );
 
-      const gridTemplateColumns = `repeat(${this.items.length}, ${largestWidth}px)`;
+      const gridTemplateColumns = `repeat(${this.items.length}, ${this.largestWidth}px)`;
       const slot = this.slot as HTMLSlotElement;
-      slot.style.display = 'grid';
       slot.style.gridTemplateColumns = gridTemplateColumns;
-      slot.style.justifyContent = 'center';
-      slot.style.overflow = 'hidden';
     }
   }
 
@@ -77,6 +76,52 @@ export class NvqBrandsNavbar {
     this.updateButtonVisibility();
   }
 
+  private hasHiddenItemsLeft() {
+    if (this.slides && this.items) {
+      const containerRect = this.slides.getBoundingClientRect();
+      return this.items.some(item => {
+        const itemRect = item.getBoundingClientRect();
+        return itemRect.right < containerRect.left;
+      });
+    }
+  }
+
+  private hasHiddenItemsRight() {
+    if (this.slides && this.items) {
+      const containerRect = this.slides.getBoundingClientRect();
+      return this.items.some(item => {
+        const itemRect = item.getBoundingClientRect();
+        return itemRect.left > containerRect.right;
+      });
+    }
+  }
+
+  private handlePreviousClick(): void {
+    this.scrollPosition += this.largestWidth;
+    (this.slot as HTMLElement).style.left = `${this.scrollPosition}px`;
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        this.updateItemVisibility();
+      }, 100);
+      setTimeout(() => {
+        this.updateButtonVisibility();
+      }, 100);
+    });
+  }
+
+  private handleNextClick(): void {
+    this.scrollPosition -= this.largestWidth;
+    (this.slot as HTMLElement).style.left = `${this.scrollPosition}px`;
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        this.updateItemVisibility();
+      }, 100);
+      setTimeout(() => {
+        this.updateButtonVisibility();
+      }, 100);
+    });
+  }
+
   render() {
     return (
       <Host>
@@ -84,21 +129,27 @@ export class NvqBrandsNavbar {
             class="prev"
             title="Previous"
             ref={el => this.prevButton = el}
+            style={{ display: this.hasHiddenItemsLeft() ? 'block' : 'none' }}
+            onClick={() => this.handlePreviousClick()}
           >
             <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 30" width="23" height="38">
               <path d="m17.5 29.3v-28.4l-17.1 14.5c0 0 18.3 15.1 17.1 13.9z"/>
             </svg>
           </button>
-          <div ref={el => this.slides = el} class="slides">
-            <slot
-              ref={el => this.slot = el}
-              onSlotchange={() => {this.handleSlotChanged()}}
-            />
-          </div>
+            <div ref={el => this.slides = el} class="slides">
+              <div class="carousel-inner">
+                <slot
+                  ref={el => this.slot = el}
+                  onSlotchange={() => {this.handleSlotChanged()}}
+                />
+              </div>
+            </div>
           <button
             class="next"
             title="Next"
             ref={el => this.nextButton = el}
+            style={{ display: this.hasHiddenItemsRight() ? 'block' : 'none' }}
+            onClick={() => this.handleNextClick()}
           >
             <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 28" width="23" height="38">
               <path d="m0.4 0.6v26.7l16.1-13.7c0 0-17.2-14.2-16.1-13z"/>
