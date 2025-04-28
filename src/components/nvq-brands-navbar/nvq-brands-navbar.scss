@@ -49,11 +49,11 @@ div.slides {
       padding: 15px 18px;
       text-align: center;
       position: relative;
-      transition: all 0.1s ease-in-out;
+      transition: all 0.1s;
       &::slotted(a) {
         max-height: var(--max-height);
         opacity: 1;
-        transition: all 0.1s ease-in-out;
+        transition: all 0.1s;
       }
     }
   }

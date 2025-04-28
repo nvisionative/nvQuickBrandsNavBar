@@ -45,13 +45,19 @@ export class NvqBrandsNavbar {
   private updateButtonVisibility() {
     if (this.slides && this.items && this.prevButton && this.nextButton) {
       const containerRect = this.slides.getBoundingClientRect();
-      const allItemsFit = this.items.every(item => {
+
+      const hasOverflowLeft = this.items.some(item => {
         const itemRect = item.getBoundingClientRect();
-        return itemRect.right <= containerRect.right && itemRect.left >= containerRect.left;
+        return itemRect.right < containerRect.left;
       });
 
-      this.prevButton.style.display = allItemsFit ? 'none' : 'block';
-      this.nextButton.style.display = allItemsFit ? 'none' : 'block';
+      const hasOverflowRight = this.items.some(item => {
+        const itemRect = item.getBoundingClientRect();
+        return itemRect.left > containerRect.right;
+      });
+
+      this.prevButton.style.display = hasOverflowLeft ? 'block' : 'none';
+      this.nextButton.style.display = hasOverflowRight ? 'block' : 'none';
     }
   }
 
@@ -74,26 +80,6 @@ export class NvqBrandsNavbar {
     this.updateGridTemplateColumns();
     this.updateItemVisibility();
     this.updateButtonVisibility();
-  }
-
-  private hasHiddenItemsLeft() {
-    if (this.slides && this.items) {
-      const containerRect = this.slides.getBoundingClientRect();
-      return this.items.some(item => {
-        const itemRect = item.getBoundingClientRect();
-        return itemRect.right < containerRect.left;
-      });
-    }
-  }
-
-  private hasHiddenItemsRight() {
-    if (this.slides && this.items) {
-      const containerRect = this.slides.getBoundingClientRect();
-      return this.items.some(item => {
-        const itemRect = item.getBoundingClientRect();
-        return itemRect.left > containerRect.right;
-      });
-    }
   }
 
   private handlePreviousClick(): void {
@@ -129,7 +115,6 @@ export class NvqBrandsNavbar {
             class="prev"
             title="Previous"
             ref={el => this.prevButton = el}
-            style={{ display: this.hasHiddenItemsLeft() ? 'block' : 'none' }}
             onClick={() => this.handlePreviousClick()}
           >
             <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 30" width="23" height="38">
@@ -148,7 +133,6 @@ export class NvqBrandsNavbar {
             class="next"
             title="Next"
             ref={el => this.nextButton = el}
-            style={{ display: this.hasHiddenItemsRight() ? 'block' : 'none' }}
             onClick={() => this.handleNextClick()}
           >
             <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 28" width="23" height="38">
