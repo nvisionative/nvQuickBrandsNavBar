@@ -32,6 +32,7 @@ export default tseslint.config(
     },
     {
         rules: {
+            "react/jsx-no-bind": "off",
             "@typescript-eslint/no-unsafe-return": "off",
         }
     }
