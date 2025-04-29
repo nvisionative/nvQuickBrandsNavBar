@@ -1,0 +1,59 @@
+:host {
+  /** @prop --background-color: The color of the navbar */
+  --background-color: black;
+
+  /** @prop --arrows-color: The color of the arrows */
+  --arrows-color: #717171;
+
+  /** @prop --arrows-color-focus: The color of the arrows on hover or focus */
+  --arrows-color-focus: #fff;
+
+  /** @prop --max-height: The maximum height of the logos. */
+  --max-height: 42px;
+
+  display: flex;
+  width: 100%;
+}
+
+button {
+  width: 64px;
+  background-color: var(--background-color);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  svg {
+    fill: var(--arrows-color);
+  }
+  &:hover, &:focus {
+    svg {
+      fill: var(--arrows-color-focus);
+    }
+  }
+}
+
+div.slides {
+  flex-grow: 1;
+  flex-shrink: 1;
+  background-color: var(--background-color);
+  overflow: hidden;
+  .carousel-inner{
+    overflow: hidden;
+    position: relative;
+    background-color: var(--background-color);
+    slot {
+      display: grid;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--background-color);
+      padding: 15px 18px;
+      text-align: center;
+      position: relative;
+      transition: all 0.1s;
+      &::slotted(a) {
+        max-height: var(--max-height);
+        opacity: 1;
+        transition: all 0.1s;
+      }
+    }
+  }
+}

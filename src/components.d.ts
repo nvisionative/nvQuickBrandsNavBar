@@ -6,56 +6,32 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+    interface NvqBrandsNavbar {
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLNvqBrandsNavbarElement extends Components.NvqBrandsNavbar, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLNvqBrandsNavbarElement: {
+        prototype: HTMLNvqBrandsNavbarElement;
+        new (): HTMLNvqBrandsNavbarElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "nvq-brands-navbar": HTMLNvqBrandsNavbarElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
+    interface NvqBrandsNavbar {
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "nvq-brands-navbar": NvqBrandsNavbar;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "nvq-brands-navbar": LocalJSX.NvqBrandsNavbar & JSXBase.HTMLAttributes<HTMLNvqBrandsNavbarElement>;
         }
     }
 }
