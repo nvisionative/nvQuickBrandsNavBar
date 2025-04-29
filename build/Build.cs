@@ -12,6 +12,7 @@ using Nuke.Common.Tools.Git;
 using Nuke.Common.Tools.GitHub;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.Npm;
+using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
 using Octokit;
 using static Nuke.Common.EnvironmentInfo;
@@ -31,7 +32,7 @@ using static Nuke.Common.Tools.Npm.NpmTasks;
 [GitHubActions(
     "Deploy",
     GitHubActionsImage.UbuntuLatest,
-    ImportSecrets = new[] { nameof(GitHubToken), "GITHUB_TOKEN", nameof(NpmToken), "NPM_TOKEN" },
+    ImportSecrets = new[] { nameof(GitHubToken), "GITHUB_TOKEN", nameof(NpmKey), "NPM_KEY" },
     OnPushBranches = new[] { "main", "release/*" },
     InvokedTargets = new[] { nameof(Deploy) },
     FetchDepth = 0,
@@ -52,7 +53,7 @@ class Build : NukeBuild
 
     [Parameter("NPM Token")]
     [Secret]
-    readonly string NpmToken;
+    readonly string NpmKey;
 
     [Parameter("GitHub Token")]
     [Secret]
@@ -94,11 +95,13 @@ class Build : NukeBuild
     .OnlyWhenDynamic(() => GitRepository.IsOnMainBranch() || GitRepository.IsOnReleaseBranch())
     .Executes(() =>
     {
-        var version = GitRepository.IsOnMainBranch() ? GitVersion.MajorMinorPatch : GitVersion.NuGetVersionV2;
+        var version = GitRepository.IsOnMainBranch() ? GitVersion.MajorMinorPatch : GitVersion.SemVer;
+        Serilog.Log.Information($"Setting version to {version}");
         Npm($"version {version} --allow-same-version --git-tag-version false", RootDirectory);
     });
 
     Target Compile => _ => _
+        .DependsOn(Clean)
         .DependsOn(Restore)
         .DependsOn(SetVersion)
         .Executes(() =>
@@ -130,7 +133,7 @@ class Build : NukeBuild
 
             // npm
             var npmrcFile = RootDirectory / ".npmrc";
-            npmrcFile.WriteAllText($"//registry.npmjs.org/:_authToken={NpmToken}");
+            npmrcFile.WriteAllText($"//registry.npmjs.org/:_authToken={NpmKey}");
             var tag = GitRepository.IsOnMainOrMasterBranch() ? "latest" : "next";
             Npm($"publish --access public --tag {tag}");
         });

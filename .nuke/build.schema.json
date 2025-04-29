@@ -116,7 +116,7 @@
           "description": "GitHub Token",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
-        "NpmToken": {
+        "NpmKey": {
           "type": "string",
           "description": "NPM Token",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"

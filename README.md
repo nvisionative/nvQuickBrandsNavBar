@@ -28,7 +28,7 @@ Need help? Check out the stencil docs [here](https://stenciljs.com/docs/my-first
 ### Lazy Loading
 
 ```html
-<script type="module" src="https://unpkg.com/nvq-brands-nav-bar"></script>
+<script type="module" src="https://unpkg.com/@nvisionative/nvq-brands-nav-bar"></script>
 <!--
 To avoid unpkg.com redirects to the actual file, you can also directly import:
 https://unpkg.com/nvq-brands-nav-bar@0.0.1/dist/nvq-brands-nav-bar/fnvq-brands-nav-bar.esm.js
@@ -45,5 +45,5 @@ This will only load the necessary scripts needed to render `<nvq-brands-nav-bar 
 You can also import the script as part of your `node_modules` in your applications entry file:
 
 ```tsx
-import 'nvq-brands-nav-bar/dist/nvq-brands-nav-bar/nvq-brands-nav-bar.esm.js';
+import '@nvisionative/nvq-brands-nav-bar/dist/nvq-brands-nav-bar/nvq-brands-nav-bar.esm.js';
 ```
