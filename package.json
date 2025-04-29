@@ -13,10 +13,6 @@
       "import": "./dist/nvq-brands-nav-bar/nvq-brands-nav-bar.esm.js",
       "require": "./dist/nvq-brands-nav-bar/nvq-brands-nav-bar.cjs.js"
     },
-    "./my-component": {
-      "import": "./dist/components/my-component.js",
-      "types": "./dist/components/my-component.d.ts"
-    },
     "./loader": {
       "import": "./loader/index.js",
       "require": "./loader/index.cjs",
@@ -25,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stenciljs/component-starter.git"
+    "url": "https://github.com/nvisionative/nvQuickBrandsNavBar.git"
   },
   "files": [
     "dist/",
