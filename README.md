@@ -2,7 +2,7 @@
 
 # nvquick Brands Navbar
 
-> This is a web-component to display a brands navbar on websites.
+> This is a web-component to handle the display of a brands navigation bar across all website properties within the overarching brand portfolio.
 
 ## Getting Started
 
