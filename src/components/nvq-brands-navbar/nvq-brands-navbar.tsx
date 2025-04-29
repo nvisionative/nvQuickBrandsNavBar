@@ -17,6 +17,8 @@ export class NvqBrandsNavbar {
   private slides?: HTMLDivElement;
   private prevButton?: HTMLButtonElement;
   private nextButton?: HTMLButtonElement;
+  private resizeObserver?: ResizeObserver;
+  private previousWidth: number | null = null;
 
   private updateGridTemplateColumns() {
     if (this.slot != undefined && this.items.length > 0) {
@@ -48,12 +50,12 @@ export class NvqBrandsNavbar {
 
       const hasOverflowLeft = this.items.some(item => {
         const itemRect = item.getBoundingClientRect();
-        return itemRect.right < containerRect.left;
+        return itemRect.left < containerRect.left;
       });
 
       const hasOverflowRight = this.items.some(item => {
         const itemRect = item.getBoundingClientRect();
-        return itemRect.left > containerRect.right;
+        return itemRect.right > containerRect.right;
       });
 
       this.prevButton.style.display = hasOverflowLeft ? 'block' : 'none';
@@ -61,22 +63,37 @@ export class NvqBrandsNavbar {
     }
   }
 
-  private handleResize() {
-    this.updateItemVisibility();
-    this.updateButtonVisibility();
-  }
-
   connectedCallback() {
-    window.addEventListener('resize', this.handleResize.bind(this));
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const currentWidth = entry.contentRect.width;
+        const widthDelta = this.previousWidth !== null ? currentWidth - this.previousWidth : 0;
+        if (this.scrollPosition != 0 && widthDelta != 0){
+          if (this.scrollPosition > 0) {
+            this.scrollPosition -= widthDelta;
+          } else {
+            this.scrollPosition += widthDelta;
+          }
+        }
+        this.previousWidth = currentWidth;
+      }
+      (this.slot as HTMLElement).style.left = `${this.scrollPosition}px`;
+      this.updateItemVisibility();
+      this.updateButtonVisibility();
+    });
+
+    this.resizeObserver.observe(this.el); // Observe the host element instead of slides
   }
 
   disconnectedCallback() {
-    window.removeEventListener('resize', this.handleResize.bind(this));
+    if (this.resizeObserver) {
+      this.resizeObserver.unobserve(this.el); // Unobserve the host element
+    }
+    this.resizeObserver = undefined;
   }
   
   private handleSlotChanged() {
     this.items = this.el.shadowRoot?.querySelector('slot')?.assignedElements() ?? [];
-    console.log(this.items);
     this.updateGridTemplateColumns();
     this.updateItemVisibility();
     this.updateButtonVisibility();
