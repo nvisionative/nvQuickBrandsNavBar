@@ -12,6 +12,7 @@ using Nuke.Common.Tools.Git;
 using Nuke.Common.Tools.GitHub;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.Npm;
+using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
 using Octokit;
 using static Nuke.Common.EnvironmentInfo;
@@ -94,11 +95,13 @@ class Build : NukeBuild
     .OnlyWhenDynamic(() => GitRepository.IsOnMainBranch() || GitRepository.IsOnReleaseBranch())
     .Executes(() =>
     {
-        var version = GitRepository.IsOnMainBranch() ? GitVersion.MajorMinorPatch : GitVersion.NuGetVersionV2;
+        var version = GitRepository.IsOnMainBranch() ? GitVersion.MajorMinorPatch : GitVersion.SemVer;
+        Serilog.Log.Information($"Setting version to {version}");
         Npm($"version {version} --allow-same-version --git-tag-version false", RootDirectory);
     });
 
     Target Compile => _ => _
+        .DependsOn(Clean)
         .DependsOn(Restore)
         .DependsOn(SetVersion)
         .Executes(() =>

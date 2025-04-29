@@ -1,6 +1,6 @@
 {
   "name": "nvq-brands-nav-bar",
-  "version": "0.0.1",
+  "version": "0.1.0-beta.1",
   "description": "nvQuickBrandsNavBar is a Stencil component that provides a navigation bar for multi-brand web properties.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
