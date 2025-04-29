@@ -32,7 +32,7 @@ using static Nuke.Common.Tools.Npm.NpmTasks;
 [GitHubActions(
     "Deploy",
     GitHubActionsImage.UbuntuLatest,
-    ImportSecrets = new[] { nameof(GitHubToken), "GITHUB_TOKEN", nameof(NpmToken), "NPM_TOKEN" },
+    ImportSecrets = new[] { nameof(GitHubToken), "GITHUB_TOKEN", nameof(NpmKey), "NPM_KEY" },
     OnPushBranches = new[] { "main", "release/*" },
     InvokedTargets = new[] { nameof(Deploy) },
     FetchDepth = 0,
@@ -53,7 +53,7 @@ class Build : NukeBuild
 
     [Parameter("NPM Token")]
     [Secret]
-    readonly string NpmToken;
+    readonly string NpmKey;
 
     [Parameter("GitHub Token")]
     [Secret]
@@ -133,7 +133,7 @@ class Build : NukeBuild
 
             // npm
             var npmrcFile = RootDirectory / ".npmrc";
-            npmrcFile.WriteAllText($"//registry.npmjs.org/:_authToken={NpmToken}");
+            npmrcFile.WriteAllText($"//registry.npmjs.org/:_authToken={NpmKey}");
             var tag = GitRepository.IsOnMainOrMasterBranch() ? "latest" : "next";
             Npm($"publish --access public --tag {tag}");
         });
