@@ -18,7 +18,7 @@ npm start
 To build the component for production, run:
 
 ```bash
-npm run build
+npm run build 
 ```
 
 Need help? Check out the stencil docs [here](https://stenciljs.com/docs/my-first-component).
