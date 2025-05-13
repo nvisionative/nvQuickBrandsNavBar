@@ -27,6 +27,7 @@
         "Clean",
         "Compile",
         "Deploy",
+        "LogVersion",
         "Restore",
         "SetVersion",
         "TagRelease"
