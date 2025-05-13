@@ -60,7 +60,7 @@ class Build : NukeBuild
     readonly string GitHubToken;
 
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitVersion(NoFetch = true)] readonly GitVersion GitVersion;
 
     // Directories
     AbsolutePath DistDirectory => RootDirectory / "dist";
@@ -91,7 +91,6 @@ class Build : NukeBuild
     });
 
     Target SetVersion => _ => _
-    .DependsOn(TagRelease)
     .OnlyWhenDynamic(() => GitRepository.IsOnMainBranch() || GitRepository.IsOnReleaseBranch())
     .Executes(() =>
     {
@@ -100,10 +99,20 @@ class Build : NukeBuild
         Npm($"version {version} --allow-same-version --git-tag-version false", RootDirectory);
     });
 
+    Target LogVersion => _ => _
+        .Before(SetVersion)
+        .Executes(() =>
+        {
+            GitVersionTasks.GitVersion(s => s
+                .SetProcessWorkingDirectory(RootDirectory)
+                .EnableDiagnostics());
+        });
+
     Target Compile => _ => _
         .DependsOn(Clean)
         .DependsOn(Restore)
         .DependsOn(SetVersion)
+        .DependsOn(LogVersion)
         .Executes(() =>
         {
             NpmRun(s => s
