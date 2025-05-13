@@ -60,7 +60,7 @@ class Build : NukeBuild
     readonly string GitHubToken;
 
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitVersion(NoFetch = true)] readonly GitVersion GitVersion;
 
     // Directories
     AbsolutePath DistDirectory => RootDirectory / "dist";
